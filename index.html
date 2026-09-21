@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小小 · 作品集</title>
+<meta name="description" content="个人投资工具作品集：股票估值计算器、持仓速览台、市场情绪风险雷达、基金组合诊断。">
+<style>
+:root{
+  --bg:#f0f2f5; --card:#ffffff; --text:#1f2328; --muted:#656d76;
+  --line:#d8dee4; --brand:#1a73e8; --brand-soft:#e8f0fe; --brand-text:#1558b0;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0d1117; --card:#161b22; --text:#e6edf3; --muted:#8b949e;
+    --line:#30363d; --brand:#6ea8fe; --brand-soft:#132039; --brand-text:#9ec5ff;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  line-height:1.75; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:880px;margin:0 auto;padding:56px 24px 72px}
+
+.hero{display:flex;align-items:center;gap:18px;margin-bottom:24px}
+.avatar{
+  width:64px;height:64px;flex:0 0 64px;border-radius:50%;
+  background:var(--brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:500;letter-spacing:0;
+}
+h1{font-size:26px;font-weight:600;line-height:1.3}
+.tagline{font-size:14px;color:var(--muted);margin-top:2px}
+
+.bio{font-size:15px;color:var(--text);margin-bottom:8px}
+.bio + .bio{margin-top:12px}
+.bio-dim{color:var(--muted);font-size:14px}
+
+.links{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 8px}
+.links a{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--brand-text);text-decoration:none;
+  background:var(--brand-soft);border-radius:999px;padding:5px 14px;
+  border:1px solid transparent;transition:border-color .15s;
+}
+.links a:hover{border-color:var(--brand)}
+
+h2{
+  font-size:15px;font-weight:600;color:var(--muted);
+  margin:44px 0 16px;letter-spacing:.02em;
+}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+
+.card{
+  display:block;text-decoration:none;color:inherit;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:20px 22px 18px;transition:transform .15s,border-color .15s;
+}
+a.card:hover{transform:translateY(-2px);border-color:var(--brand)}
+.card.off{opacity:.72}
+
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.card h3{font-size:16px;font-weight:600}
+.badge{
+  flex:0 0 auto;font-size:11px;line-height:1.7;
+  border-radius:999px;padding:0 9px;white-space:nowrap;
+}
+.badge.live{background:var(--brand-soft);color:var(--brand-text)}
+.badge.soon{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.card p{font-size:13.5px;color:var(--muted);line-height:1.7}
+
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tags span{
+  font-size:11.5px;color:var(--muted);
+  border:1px solid var(--line);border-radius:5px;padding:1px 8px;
+}
+
+footer{
+  margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--muted);
+}
+
+@media (max-width:560px){
+  .wrap{padding:36px 18px 56px}
+  h1{font-size:22px}
+  .avatar{width:54px;height:54px;flex-basis:54px;font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="avatar" aria-hidden="true">小</div>
+    <div>
+      <h1>小小</h1>
+      <p class="tagline">个人投资者 · 自己写工具的人</p>
+    </div>
+  </header>
+
+  <p class="bio">
+    我做投资，也自己写工具。把投资里反复要做的判断，做成点开就能用的网页——估值算得清楚一点，持仓看得明白一点，市场情绪量得出来一点。
+  </p>
+  <p class="bio bio-dim">
+    下面这些工具都是我自己在用、也会持续改的。大部分可以离线打开，也可以在手机上装成 App。
+  </p>
+
+  <div class="links">
+    <a href="https://github.com/gyhok368519" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+
+  <h2>作品</h2>
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    © <span id="year"></span> 小小 · 本站为静态页面，所有工具均为个人自用工具
+  </footer>
+
+</div>
+
+<script>
+/* ================================================================
+   作品清单 —— 这是整个站点唯一需要维护的地方
+
+   以后新增一个作品，只要在下面数组里加一条就行，页面会自动多出一张卡片。
+
+   字段说明：
+     title  作品名
+     desc   一句话说明（写给访客看，说清楚"它能干什么"）
+     tags   标签，2-4 个
+     url    线上地址。还没有线上地址就留空字符串 ""
+     status "live" 已上线 / "soon" 待上线 / "proto" 原型阶段
+   ================================================================ */
+const PROJECTS = [
+  {
+    title: "PB 估值计算器",
+    desc: "输入股票代码自动识别，按 PB = PE × ROE 的口径判断高估还是低估，并给出历史分位参考。可离线使用，能装到手机桌面。",
+    tags: ["PWA", "离线可用", "股票估值"],
+    url: "https://gyhok368519.github.io/stock-valuation/PB_PE_ROE_calc.html",
+    status: "live"
+  },
+  {
+    title: "持仓速览台",
+    desc: "把 27 条持仓（股票 16 只、基金 11 只）收在一张看板上，支持按类型筛选、组合汇总，并可导出 CSV 表格。数据存在云端，换设备打开看到的是同一份。",
+    tags: ["数据看板", "CSV 导出", "云端同步"],
+    url: "",                      /* TODO: 填持仓速览台的线上地址 */
+    status: "soon"
+  },
+  {
+    title: "群体心理风险雷达",
+    desc: "用多维指标量化 A 股市场的群体情绪，定位情绪极端区间与资金分化，辅助判断大盘现在处在哪个阶段。",
+    tags: ["市场情绪", "风险监控", "A 股"],
+    url: "https://ashare-group-psych-radar.app.workbuddy.host/",
+    status: "live"
+  },
+  {
+    title: "基金组合健康诊断",
+    desc: "对基金组合做穿透式体检：看底层持仓有没有重复、风格有没有漂移、风险指标是否健康，判断组合是不是真的分散。",
+    tags: ["基金", "组合诊断", "穿透持仓"],
+    url: "",                      /* TODO: 待上线 */
+    status: "soon"
+  },
+  {
+    title: "高考志愿参谋",
+    desc: "高考志愿填报辅助应用的交互原型与后端架构设计，包含关键流程的完整设计和数据字段约定。",
+    tags: ["产品原型", "架构设计"],
+    url: "",                      /* TODO: 待上线 */
+    status: "proto"
+  }
+];
+
+const STATUS_TEXT = { live: "已上线", soon: "待上线", proto: "原型" };
+
+function card(p) {
+  const badge = `<span class="badge ${p.status}">${STATUS_TEXT[p.status] || ""}</span>`;
+  const tags = p.tags.map(t => `<span>${t}</span>`).join("");
+  const inner = `
+    <div class="card-head"><h3>${p.title}</h3>${badge}</div>
+    <p>${p.desc}</p>
+    <div class="tags">${tags}</div>`;
+
+  /* 有线上地址就渲染成可点击的链接，否则渲染成静态卡片 */
+  if (p.url) {
+    return `<a class="card" href="${p.url}" target="_blank" rel="noopener">${inner}</a>`;
+  }
+  return `<div class="card off">${inner}</div>`;
+}
+
+document.getElementById("grid").innerHTML = PROJECTS.map(card).join("");
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
