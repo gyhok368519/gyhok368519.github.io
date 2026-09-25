@@ -146,13 +146,34 @@ git push
 | 背景视差 | 鼠标移动时两束光反向轻微偏移 |
 | 卡片 3D 倾斜 | 指针位置决定卡片绕轴旋转角（最大 5°）并上浮 3px |
 
-### 关节动效时的两条硬规则
+### 做动效时的三条硬规则
 
 **一、系统开了「减弱动效」就全部关掉。** 代码里先判断 `prefers-reduced-motion`，命中就**连事件监听都不注册**，同时 CSS 里也有一层 `@media` 兜底。这是无障碍要求，不是可选项。
 
 **二、入场位移用 `translate` 属性，不用 `transform`。** 因为卡片的 3D 倾斜也占用 `transform`。早期版本里 `.reveal.in{transform:none}` 的优先级高于 `a.card`，**把倾斜的 transform 整个干掉了**——变量算得对、规则也匹配，但卡片就是不转。改用独立的 `translate` 属性后两者才能共存。
 
 同理，`3D 倾斜`里旋转角必须在 JS 里算好带单位写进变量（`--rx: 4.8deg`），**不能写成 `calc(var(--mx) * 5deg)`**——未注册的自定义属性按字符串替换处理，那样写 `transform` 会整条失效。
+
+**三、错峰延迟只能给「入场」那两件事，不能广播到所有属性。**
+卡片错开入场的延迟来自 `.grid .card.reveal{transition-delay:...}`。如果偷懒写**单值** `transition-delay:var(--d,0ms)`，这个值会**广播到卡片上的每一个过渡属性**，包括 3D 倾斜用的 `transform`。后果是：第一张卡延迟 0ms 所以正常，第 2~5 张分别被延迟 70/140/210/280ms，鼠标一动它们还在等——**看起来就像「只有第一张卡片有倾斜」**。
+
+正确写法是把属性列表和延迟列表**一一对齐**，并让 `transform` 的延迟恒为 0：
+
+```css
+/* 属性顺序固定：opacity / translate / transform / border-color / background-color */
+a.card{
+  transition-property:opacity,translate,transform,border-color,background-color;
+  transition-duration:.5s,.5s,.18s,.18s,.18s;
+  transition-delay:var(--d,0ms),var(--d,0ms),0ms,0ms,0ms;  /* ← transform 是 0ms */
+}
+```
+
+⚠️ 注意**不能用 `transition` 简写**：简写会把 `transition-delay` 一并重置，
+`--d` 错峰就又丢了。**属性多的过渡一律用长写法逐项声明。**
+
+> 排查这类问题的通用思路：改完动效一定要**在真浏览器里量**，
+> 别靠肉眼看 `transition` 声明。用 `getComputedStyle(card).transitionDelay`
+> 把每张卡的延迟打出来，一眼就能看出谁被拖后腿了。
 
 ## 为什么要保持单文件
 

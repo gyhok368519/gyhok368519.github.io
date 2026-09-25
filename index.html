@@ -94,14 +94,22 @@ a{color:inherit}
    3D 倾斜 transform 互不干扰，两者能同时生效。 */
 .reveal{
   opacity:0;translate:0 14px;
-  transition:opacity .5s ease,translate .5s cubic-bezier(.22,.7,.3,1);
+  /* 属性顺序固定为 opacity / translate / transform，和下面 transition-delay 的
+     三个值一一对应。transform 放最后且延迟 0，保证倾斜是即时响应的。 */
+  transition-property:opacity,translate,transform;
+  transition-duration:.5s,.5s,.18s;
+  transition-timing-function:ease,cubic-bezier(.22,.7,.3,1),ease-out;
+  transition-delay:0ms,0ms,0ms;
 }
 /* 入场结束：只把位移和透明度复位。绝不能写 transform:none ——
    .reveal.in 比 a.card 更具体，会把 3D 倾斜的 transform 一起干掉。 */
 .reveal.in{opacity:1;translate:0 0}
 
-/* 卡片错开入场：给同组卡片依次加一点延迟，形成逐条浮现的节奏 */
-.grid .card.reveal{transition-delay:var(--d,0ms)}
+/* 卡片错开入场：给同组卡片依次加一点延迟，形成逐条浮现的节奏。
+   关键：延迟只给 opacity 和 translate（第 1、2 个值），transform 的延迟恒为 0。
+   若偷懒写成 transition-delay:var(--d)（单值会广播到所有属性），第 2 张起的
+   3D 倾斜就要等 70~280ms 才开始转 —— 看起来就像「只有第一张卡有倾斜」。 */
+.grid .card.reveal{transition-delay:var(--d,0ms),var(--d,0ms),0ms,0ms,0ms}
 
 /* ============ 悬停微光 ============
    卡片右上角一抹斜向高光，hover 时扫过。纯装饰、不遮挡文字。 */
@@ -141,7 +149,15 @@ a.card:hover::after{transform:translateX(100%)}
       rotateX(var(--rx,0deg))
       rotateY(var(--ry,0deg))
       translateY(var(--tilt-lift,0px));
-    transition:transform .18s ease-out,border-color .18s ease,background-color .18s ease;
+    /* 用长写法逐项声明，顺序与 .reveal 的 transition-property 对齐
+       （opacity / translate / transform）。这样 transition-delay 的三个值
+       才有确定含义，且 transform 的延迟恒为 0 —— 倾斜即时跟手。
+       若这里写成 transition 简写，会把 .reveal 的长写法整体重置，
+       错峰延迟又会被摊到 transform 上。 */
+    transition-property:opacity,translate,transform,border-color,background-color;
+    transition-duration:.5s,.5s,.18s,.18s,.18s;
+    transition-timing-function:ease,cubic-bezier(.22,.7,.3,1),ease-out,ease,ease;
+    transition-delay:var(--d,0ms),var(--d,0ms),0ms,0ms,0ms;
   }
   a.card:hover{--tilt-lift:-3px;border-color:var(--line-strong);background:var(--card-hover)}
   a.card:hover h3{color:var(--brand)}
