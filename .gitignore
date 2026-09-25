@@ -1,0 +1,14 @@
+# 工作记录与本地配置，不发布到线上站点
+.workbuddy/
+.workbuddy
+
+# 系统 / 编辑器杂项
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# 临时文件
+_*.py
+_shots/
