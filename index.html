@@ -436,6 +436,10 @@ footer p+p{margin-top:4px}
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
           <span class="meta"><b>基金组合检测</b><small>fund-diagnosis</small></span>
         </a></li>
+        <li><a href="https://gyhok368519.github.io/gyhok368519-lookup-radio/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12 18.5 5.5"/><circle cx="12" cy="12" r="1"/></svg>
+          <span class="meta"><b>解禁预警雷达</b><small>lookup-radio</small></span>
+        </a></li>
         <li><a href="https://www.ximalaya.com/zhubo/39938504" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/></svg>
           <span class="meta"><b>喜马拉雅电台</b><small>ximalaya.com</small></span>
@@ -503,6 +507,13 @@ const PROJECTS = [
     status: "live"
   },
   {
+    title: "解禁预警雷达",
+    desc: "全 A 股未来 90 天限售解禁排期与压力分布看板：按周/按类型统计解禁市值，高比例、大额、临近解禁的个股分级预警。GitHub Actions 每周一早八点半自动抓数据重建，打开永远是最新一期。",
+    tags: ["解禁排期", "风险预警", "自动更新"],
+    url: "https://gyhok368519.github.io/gyhok368519-lookup-radio/",
+    status: "live"
+  },
+  {
     title: "基金组合健康诊断",
     desc: "把自选基金组合填进去（按占比或金额都可以），自动算出组合健康评分、股/债/现金的真实穿透比例，并预警行业集中度与成分间相关性；净值回撤、久期、换手率这些结构性风险也会一并标出。所有指标都由公开历史净值实算，取不到的数据明确标注缺失，不做估算填充。",
     tags: ["基金组合", "风险体检", "穿透持仓"],
@@ -519,7 +530,7 @@ const PROJECTS = [
 ];
 
 /* 本站最后更新日期 —— 每次改动本文件后改成当天日期 */
-const SITE_UPDATED = "2026-09-25";
+const SITE_UPDATED = "2026-10-21";
 
 /* ================================================================
    渲染逻辑（一般不用改）
